@@ -2,16 +2,9 @@ package com.javafxcrud.controller;
 
 import com.javafxcrud.model.Person;
 import com.javafxcrud.utils.CalendarUtil;
-import com.javafxcrud.view.MainApp;
-import java.lang.reflect.Field;
-import java.time.LocalDate;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.regex.Pattern;
 import javafx.fxml.FXML;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
-import javafx.scene.control.Tooltip;
 import javafx.stage.Stage;
 import com.javafxcrud.annotation.FXMLColumn;
 import com.javafxcrud.annotation.FXMLColumnSize;
@@ -91,6 +84,9 @@ public class PersonEditDialogController {
 
         FXMLColumns.validColumn(getClass(), firstNameField);
         FXMLColumns.validColumn(getClass(), lastNameField);
+        
+        
+        
         
         if (firstNameField.getText() == null || firstNameField.getText().length() == 0) {
             errorMessage += "No valid first name!\n";
