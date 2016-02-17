@@ -1,6 +1,5 @@
 package com.javafxcrud.model;
 
-import com.javafxcrud.annotation.ColumnAnnotationType;
 import java.util.Calendar;
 import java.util.Random;
 
@@ -19,7 +18,6 @@ public class Person {
     public Person(String firstName, String lastName) {
         this.firstName = firstName;
         this.lastName = lastName;
-
         this.street = "some street";
         this.postalCode = 1234;
         this.city = "some city";

@@ -1,6 +1,5 @@
 package com.javafxcrud.controller;
 
-import com.javafxcrud.annotation.ColumnAnnotationType;
 import com.javafxcrud.model.Person;
 import com.javafxcrud.utils.CalendarUtil;
 import com.javafxcrud.view.MainApp;
@@ -14,13 +13,18 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.stage.Stage;
+import com.javafxcrud.annotation.FXMLColumn;
+import com.javafxcrud.annotation.FXMLColumnSize;
+import com.javafxcrud.annotation.FXMLColumns;
 
 public class PersonEditDialogController {
 
     @FXML
-    @ColumnAnnotationType(messageErro = "Digite apenas uma letra do nome:")
+    @FXMLColumn(messageErro = "Digite a primeira letra do nome:")
     private TextField firstNameField;
     @FXML
+    @FXMLColumn(messageErro = "Digite apenas uma letra do nome:")
+    @FXMLColumnSize(size=15,messageErro = "Quantidade não e valida:")
     private TextField lastNameField;
     @FXML
     private TextField streetField;
@@ -38,8 +42,7 @@ public class PersonEditDialogController {
     private boolean okClicked = false;
 
     @FXML
-    private void initialize() {
-        dataPicker = new DatePicker(LocalDate.MAX);
+    private void initialize() {        
     }
 
     public void setDialogStage(Stage dialogStage) {
@@ -83,8 +86,12 @@ public class PersonEditDialogController {
     }
 
     private boolean isInputValid() {
+        
         String errorMessage = "";
 
+        FXMLColumns.validColumn(getClass(), firstNameField);
+        FXMLColumns.validColumn(getClass(), lastNameField);
+        
         if (firstNameField.getText() == null || firstNameField.getText().length() == 0) {
             errorMessage += "No valid first name!\n";
         }
@@ -115,40 +122,9 @@ public class PersonEditDialogController {
         } else if (!CalendarUtil.validString(birthdayField.getText())) {
             errorMessage += "No valid birthday. Use the format yyyy-mm-dd!\n";
         }
+        
 
-        //Person person = new Person();
-        //person.setFirstName(firstNameField.getText());
-        Class<?> personClass = getClass();
-
-        // Ler todos os campos da class
-        for (Field field : personClass.getDeclaredFields()) {
-            //SVerificar se o metodo possui Annotation            
-            if (field.isAnnotationPresent(ColumnAnnotationType.class)) {
-                //Coletar Annotation do field
-                ColumnAnnotationType anotacao = field.getAnnotation(ColumnAnnotationType.class);                
-                //Aplicar validação de campo
-                if (Pattern.matches(anotacao.regex(), firstNameField.getText())) {
-                    //Tornar padrão
-                    firstNameField.setStyle("");
-                } else {
-                    System.err.println("Regex inválida");
-                    
-                    // Deixar vermelhor se o campo não atender a condição
-                    firstNameField.setStyle(" -fx-border-color:red; ");
-                    Tooltip tooltip = new Tooltip(anotacao.messageErro());
-                    tooltip.setStyle(""
-                            + " -fx-text-fill: rgba(17, 145,  213); "
-                            + " -fx-font: 16px \"Serif\"; "
-                            + " -fx-background-color: yellow; "
-                            + " -fx-background-radius: 5; ");
-                    
-                    firstNameField.setTooltip(tooltip);
-                }
-            }
-        }
-
-        if (errorMessage.length()
-                == 0) {
+        if (errorMessage.length()  == 0) {
             //return true;
             return false;
         } else {
@@ -157,6 +133,5 @@ public class PersonEditDialogController {
             //Dialogs.showErrorDialog(dialogStage, errorMessage, "Please correct invalid fields", "Invalid Fields");
             return false;
         }
-
     }
 }

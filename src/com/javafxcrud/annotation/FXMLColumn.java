@@ -16,7 +16,7 @@ import java.lang.annotation.Target;
  */
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ColumnAnnotationType  {
+public @interface FXMLColumn  {
     String regex() default  "[a-z]";
     String messageErro() default "";
 }
