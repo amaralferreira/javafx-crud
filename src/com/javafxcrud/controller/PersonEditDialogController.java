@@ -3,8 +3,11 @@ package com.javafxcrud.controller;
 import com.javafxcrud.annotation.ColumnAnnotationType;
 import com.javafxcrud.model.Person;
 import com.javafxcrud.utils.CalendarUtil;
+import com.javafxcrud.view.MainApp;
 import java.lang.reflect.Field;
 import java.time.LocalDate;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import javafx.fxml.FXML;
 import javafx.scene.control.DatePicker;
@@ -121,42 +124,31 @@ public class PersonEditDialogController {
         for (Field field : personClass.getDeclaredFields()) {
             //SVerificar se o metodo possui Annotation            
             if (field.isAnnotationPresent(ColumnAnnotationType.class)) {
-                //Coletar Annotation do field 
-                ColumnAnnotationType anotacao = field.getAnnotation(ColumnAnnotationType.class);
-
-                try {
-                    Class<TextField> textField = (Class<TextField>) field.getType();
-                    System.err.println("field: "+textField.cast(field));
-                    //System.err.println("field: "+((Class<TextField>)field.getType()).cast(field).getText());
+                //Coletar Annotation do field
+                ColumnAnnotationType anotacao = field.getAnnotation(ColumnAnnotationType.class);                
+                //Aplicar validação de campo
+                if (Pattern.matches(anotacao.regex(), firstNameField.getText())) {
+                    //Tornar padrão
+                    firstNameField.setStyle("");
+                } else {
+                    System.err.println("Regex inválida");
                     
+                    // Deixar vermelhor se o campo não atender a condição
+                    firstNameField.setStyle(" -fx-border-color:red; ");
+                    Tooltip tooltip = new Tooltip(anotacao.messageErro());
+                    tooltip.setStyle(""
+                            + " -fx-text-fill: rgba(17, 145,  213); "
+                            + " -fx-font: 16px \"Serif\"; "
+                            + " -fx-background-color: yellow; "
+                            + " -fx-background-radius: 5; ");
                     
-                    TextField textField1 = (TextField) field.get(TextField.class);
-                    System.err.println(textField1.getText());
-                    
-                    //Aplicar validação de campo
-                    if (Pattern.matches(anotacao.regex(), textField.toString())) {
-                        System.err.println("Regex valida");
-                    } else {
-                        System.err.println("Regex inválida");
-                        // Deixar vermelhor se o campo não atender a condição
-
-                        //textField.setStyle(" -fx-border-color:red; ");
-                        Tooltip tooltip = new Tooltip(anotacao.messageErro());
-                        tooltip.setStyle(""
-                                + " -fx-text-fill: rgba(17, 145,  213); "
-                                + " -fx-font: 16px \"Serif\"; "
-                                + " -fx-background-color: yellow; "
-                                + " -fx-background-radius: 5; ");
-
-                        //textField.setTooltip(tooltip);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
+                    firstNameField.setTooltip(tooltip);
                 }
             }
         }
 
-        if (errorMessage.length() == 0) {
+        if (errorMessage.length()
+                == 0) {
             //return true;
             return false;
         } else {
@@ -165,5 +157,6 @@ public class PersonEditDialogController {
             //Dialogs.showErrorDialog(dialogStage, errorMessage, "Please correct invalid fields", "Invalid Fields");
             return false;
         }
+
     }
 }
